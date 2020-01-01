@@ -28,7 +28,6 @@ const MovieReview = ({ id, title, coverUrl }) => {
           );
           return undefined;
         });
-        console.log(reviewData)
     if (typeof reviewData === "object") setReview(reviewData[0].review);
     }
     fetchReviewData();

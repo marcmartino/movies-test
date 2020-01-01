@@ -27,8 +27,7 @@ const filterMoviesByDecade = (decade, movies) =>
  * @param {(import("./Movies").MovieInfo[]) => void} update callback function to send filter updates to
  * @param {number} decade decade number to use for filtering
  */
-const updateMoviesByDecadeFilter = (movies, update, decade)  => {
-  console.log("updated decade", decade);
+const updateMoviesByDecadeFilter = (movies, update, decade) => {
   if (decade !== "") {
     update(filterMoviesByDecade(decade, movies));
   } else {
@@ -42,8 +41,8 @@ const DecadeFilter = ({ movies, updateMovies }) => {
 
   useEffect(() => {
     updateMoviesByDecadeFilter(movies, updateMovies, selectedDecade);
-  }, [movies, selectedDecade]);
-
+  }, [movies, selectedDecade, updateMovies]);
+  
   return (
     <div>
       <h2>Decade:</h2>

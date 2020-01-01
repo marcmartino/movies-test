@@ -21,7 +21,12 @@ const MovieListing = ({ movie: { id, title, url, year, score, coverUrl } }) => {
     >
       <span>{decToPercent(score)}</span>
       &nbsp;
-      <a target="_blank" href={url} onClick={stopPropagation}>
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href={url}
+        onClick={stopPropagation}
+      >
         {title}
       </a>
       &nbsp;

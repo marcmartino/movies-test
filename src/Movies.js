@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import MoviesFilters from "./MovieFilters";
 import MoviesList from "./MoviesList";
-import useLocalStorage from "./hooks/useLocalStorage";
 
 const Movies = () => {
-  const [movies, updateMoviesList] = useLocalStorage("moviesList", []);
+  const [movies, updateMoviesList] = useState(() => {
+    const storedList = window.localStorage.getItem("moviesList");
+    return storedList ? JSON.parse(storedList) : [];
+  });
   const [filteredMovies, updateFilteredMovies] = useState(movies);
   useEffect(() => {
     async function fetchMovieData() {
+      console.log("loading movie data...");
       const movieData = await fetch("http://localhost:6001/movies")
         .then(response => {
           return response.json();
@@ -17,18 +20,26 @@ const Movies = () => {
           alert(
             "error fetching movies, please reload the page " +
               "or try again later"
-          );
+          ).finally(() => console.log("finished loading movie data"));
         });
       const sortedMovies = movieData.sort((a, b) =>
         a.title > b.title ? 1 : -1
       );
-      if (movies.length === 0) updateMoviesList(sortedMovies);
+      console.log("data fetched", sortedMovies);
+      updateMoviesList(sortedMovies);
     }
-    fetchMovieData();
-  }, []);
+
+    // only load data from server if we got an empty array from localstorage
+    if (movies.length === 0) fetchMovieData();
+  }, [movies, updateMoviesList]);
+
+  useEffect(() => {
+    window.localStorage.setItem("moviesList", JSON.stringify(movies));
+  }, [movies]);
+
   return (
     <>
-      <MoviesFilters {...{ movies, updateMovies: updateFilteredMovies }} />
+      <MoviesFilters movies={movies} updateMovies={updateFilteredMovies} />
       <MoviesList movies={filteredMovies || []} />
     </>
   );
